@@ -1,3 +1,4 @@
+from bson import SON
 from pymongo import MongoClient
 
 
@@ -33,7 +34,19 @@ class MongoDBManager:
         return human_id
 
     # def save_student_advisor(self): this method is not needed because we don't need to separate table for it.
-    # other methods are written with joins and in mongodb we don't have joins so i am skipping them, too.
+    def advisors_with_number_of_students(self):
+        pipeline = [
+            {"$unwind": "$students"},
+            {"$group": {"_id": {"_id": "$_id", "name": "$name", "surname": "$surname"},
+                        "number_of_students": {"$sum": 1}}},
+            {"$sort": SON([("number_of_students", 1)])}
+        ]
+        advisors = self.db['Advisor'].aggregate(pipeline)
+        print("Name\t\t\tSurname\t\t\tNumber of Students")
+        print("---------------------------------------------------")
+        for advisor in advisors:
+            print(f"{advisor['_id']['name']:<15}\t{advisor['_id']['surname']:<20}"
+                  f"\t{advisor['number_of_students']}")
 
 
 mongo_db = MongoDBManager()

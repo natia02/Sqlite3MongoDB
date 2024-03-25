@@ -134,19 +134,5 @@ class RelationalDbManager:
         for row in result.fetchall():
             print(f"{row['advisor_id']:<12}\t{row['name']:<20}\t{row['number_of_students']}")
 
-    def students_with_number_of_advisors(self):
-        result = self.c.execute("""
-        SELECT s.student_id, s.name, COUNT(a.advisor_id) AS number_of_advisors
-        FROM Student s INNER JOIN StudentAdvisor sa on sa.student_id = s.student_id
-        INNER JOIN Advisor a ON sa.advisor_id = a.advisor_id
-        GROUP BY s.student_id
-        ORDER BY number_of_advisors
-        """)
-
-        print("\nStudent ID\t\tName\t\t\tNumber of Advisors")
-        print("-----------------------------------------")
-        for row in result.fetchall():
-            print(f"{row['student_id']:<12}\t{row['name']:<20}\t{row['number_of_advisors']}")
-
 
 relational_database = RelationalDbManager()

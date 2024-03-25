@@ -3,6 +3,7 @@ from Models.advisor import Advisor
 from Models.student import Student
 from Models.studentAdvisor import StudentAdvisor
 from DB.sqlite3_db import relational_database
+from DB.mongo_db import mongo_db
 
 
 class MainClass:
@@ -48,19 +49,7 @@ class MainClass:
             cls.fill_mongo_db(data)
 
         student = Student("Natia", "Pruidze", 22, "3.5")
-        advisor = Advisor("Wolfgang", "Paul", 73,
-                          [{
-                              "name": "John",
-                              "surname": "Doe",
-                              "age": 20,
-                              "gpa": 3.5
-                          },
-                              {
-                                  "name": "Michael",
-                                  "surname": "Johnson",
-                                  "age": 19,
-                                  "gpa": 3.2
-                              }])
+        advisor = Advisor("Wolfgang", "Paul", 73)
         student.save(cls.m)
         advisor.save(cls.m)
         student.save(cls.s)
@@ -69,6 +58,9 @@ class MainClass:
         print(Student.get(32, cls.s))
         print(Student.get_list(cls.m, name=student.name, surname=student.surname))
         print(Advisor.get_list(cls.m, name=advisor.name, surname=advisor.surname))
+
+        relational_database.advisors_with_number_of_students()
+        mongo_db.advisors_with_number_of_students()
 
 
 if __name__ == '__main__':
